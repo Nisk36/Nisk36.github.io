@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>新規登録ページ</title>
+    <link href="style_registaration.css" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <p>新規登録ページ<p>
+    </header>
+
+       <!--<div id="components-demo">
+            <button-counter></button-counter>
+          </div>
+        <br>!-->
+        <div id="registaration_form">
+            <input-title></input-title>
+    
+            <input-developer></input-developer>
+            
+            <input-caption></input-caption>
+
+            <select-tags></select-tags>
+
+            <input-subtag></input-subtag>
+
+            <br>
+        
+            <div id="gameholder" style="background: #fceff2; border-left: #fceff2 solid 10px; border: #fceff2 solid 1px; font-size: 100%; padding: 20px;">
+            ここにexeファイルをドラック＆ドロップ
+            </div>
+            <br>
+            <br>
+            <br>
+            <div id="tmbholder" style="background: #fceff2; border-left: #fceff2 solid 10px; border: #fceff2 solid 1px; font-size: 100%; padding: 20px;">
+                ここにサムネ用png/jpg/gifファイルをドラック＆ドロップ
+            </div>
+            <br>
+            <p>サムネイルPreview:</p>
+            <img id="previewtmb" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" style="max-width:400px;">
+            <br>
+            <br>
+            <div id="iconholder" style="background: #fceff2; border-left: #fceff2 solid 10px; border: #fceff2 solid 1px; font-size: 100%; padding: 20px;">
+                ここにアイコン用png/jpg/icoファイルをドラック＆ドロップ
+            </div>
+            <br>
+            <p>アイコンPreview:</p>
+            <img id="previewicon" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" style="max-width:400px;">
+            <br>
+            <button type="button" id="texts" onclick = "GetTexts()">
+                submit
+            </button>
+            </div>
+        </div>
+
+        
+    <footer>
+        <p> 疑問があれば</p>
+    </footer>
+    
+    <script src="https://unpkg.com/vue@next"></script>
+    <script>
+    const app = Vue.createApp({})
+
+    
+    app.component('input-title', {
+        data(){
+            return{
+            title: ''
+            }
+        },
+        template: `
+        <h3>タイトル名</h3>
+        <input v-model="title" placeholder="edit this" />
+        <p>Title : {{ title }}
+            </p>`
+    })
+
+    app.component('input-developer',{
+        data(){
+            return{
+                developer:''
+            }
+        },
+        template:`
+        <h3>開発者名</h3>
+        <input v-model="developer" placeholder="edit this" />
+        <p>Developer : {{ developer }}
+            </p>`
+    })
+
+    app.component('input-caption',{
+        data(){
+            return{
+                caption:''
+            }
+        },
+        template:`
+        <h3>説明文</h3>
+        <textarea v-model="caption" placeholder="add multiple lines" rows= "10" cols = "50" spellcheck="false"></textarea>
+        <p>Caption : {{ caption }}
+            </p>`
+    })
+
+    app.component('select-tags',{
+        data(){
+            return{
+                tags:''
+            }
+        },
+        template:`
+        <h3>Tag(複数選択可)</h3>
+        <select size ="5" v-model="tags" multiple>
+            <option value="ACTION">Action</option>
+            <option value="SHOOTING">SHOOTING</option>
+            <option value="RPG">RPG</option>
+            <option value="PUZZLE">PUZZLE</option>
+            <option value="SIMULATION">SIMULATION</option>
+            <option value="ADVENTURE">ADVENTURE</option>
+            <option value="FIGHTING">FIGHTING</option>
+            <option value="RACE">RACE</option>
+            <option value="RHYTHM">RHYTHM</option>
+            <option value="SPORTS">SPORTS</option>
+            <option value="ETCETRA">ETCETRA</option>
+        </select>
+        <br />
+        <span>Tag: {{ tags }}</span>`
+    })
+    app.component('input-subtag', {
+        data(){
+            return{
+            subtag: ''
+            }
+        },
+        template: `
+        <h3>subtag</h3>
+        <input v-model="subtag" placeholder="edit this" />
+        <p>Subtag : {{ subtag }}
+            </p>`
+    })
+    
+    
+
+    app.mount('#registaration_form')
+
+
+    </script>
+</body>
+</html>
