@@ -25,29 +25,10 @@
 
             <input-subtag></input-subtag>
 
-            <br>
-        
-            <div id="gameholder" style="background: #fceff2; border-left: #fceff2 solid 10px; border: #fceff2 solid 1px; font-size: 100%; padding: 20px;">
-            ここにexeファイルをドラック＆ドロップ
-            </div>
-            <br>
-            <br>
-            <br>
-            <div id="tmbholder" style="background: #fceff2; border-left: #fceff2 solid 10px; border: #fceff2 solid 1px; font-size: 100%; padding: 20px;">
-                ここにサムネ用png/jpg/gifファイルをドラック＆ドロップ
-            </div>
-            <br>
-            <p>サムネイルPreview:</p>
-            <img id="previewtmb" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" style="max-width:400px;">
-            <br>
-            <br>
-            <div id="iconholder" style="background: #fceff2; border-left: #fceff2 solid 10px; border: #fceff2 solid 1px; font-size: 100%; padding: 20px;">
-                ここにアイコン用png/jpg/icoファイルをドラック＆ドロップ
-            </div>
-            <br>
-            <p>アイコンPreview:</p>
-            <img id="previewicon" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" style="max-width:400px;">
-            <br>
+            <tmb-setting></tmb-setting>
+
+            <img-setting></img-setting>
+
             <button type="button" id="texts" onclick = "GetTexts()">
                 submit
             </button>
@@ -56,7 +37,7 @@
 
         
     <footer>
-        <p> 疑問があれば</p>
+        <p> cssがカスなのは見逃してください</p>
     </footer>
     
     <script src="https://unpkg.com/vue@next"></script>
@@ -140,6 +121,92 @@
             </p>`
     })
     
+    app.component('tmb-setting',{
+        data(){
+            return{
+                dataurl:null,
+                file:null,
+            }
+        },
+        methods:{
+            readTmb(){
+                const inputTmb = document.getElementById('tmb');
+                if(inputTmb.files.length == 0){
+                    return ;
+                }
+                
+                this.file = inputTmb.files[0];
+                console.log(this.dataurl);
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    this.dataurl = e.target.result;
+                }
+                reader.readAsDataURL(this.file);
+            },
+            resetTmb(){
+                this.dataurl = null;
+                this.file = null;
+            },
+        },
+        template:`
+        <div>
+            <h3>サムネを選択</h3>
+            <div v-if="!dataurl">
+                <input type="file" id="tmb" accept = "images/*" @change="readTmb">
+            </div>
+            <div v-else>
+                <div id="tmb-preview">
+                    <span v-if="file.name != ''">{{ file.name }}</span>
+                    <img :src="dataurl" v-if="dataurl">
+                </div>
+                <button type ="button" @click = "resetTmb">サムネのリセット</button>
+            </div>
+        </div>`
+    })
+    
+    app.component('img-setting',{
+        data(){
+            return{
+                dataurl:null,
+                file:null,
+            }
+        },
+        methods:{
+            readImg(){
+                const inputImg = document.getElementById('tmb');
+                if(inputImg.files.length == 0){
+                    return ;
+                }
+                
+                this.file = inputImg.files[0];
+                console.log(this.dataurl);
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    this.dataurl = e.target.result;
+                }
+                reader.readAsDataURL(this.file);
+            },
+            resetImg(){
+                this.dataurl = null;
+                this.file = null;
+            },
+        },
+        template:`
+        <div>
+            <h3>プレイ画像を選択</h3>
+            <div v-if="!dataurl">
+                <input type="file" id="tmb" accept = "images/*" @change="readImg">
+            </div>
+            <div v-else>
+                <div id="img-preview">
+                    <span v-if="file.name != ''">{{ file.name }}</span>
+                    <img :src="dataurl" v-if="dataurl">
+                </div>
+                <button type ="button" @click = "resetImg">サムネのリセット</button>
+            </div>
+        </div>`
+    })
+
     
 
     app.mount('#registaration_form')
