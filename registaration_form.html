@@ -7,7 +7,7 @@
 </head>
 <body>
     <header>
-        <p>新規登録ページ<p>
+        <p>Vue.jsのコンポーネント使った新規登録ページっぽいもの<p>
     </header>
 
        <!--<div id="components-demo">
@@ -36,7 +36,8 @@
         
     <footer>
         <p> cssがカスなのは見逃してください。
-            単ーコンポーネント構造でやればよかった...
+            単ーコンポーネント構造でやればよかった...<br>  
+            submit押してconsole見ればsubtagまでのjsonデータが生成できてると思います。submit押してからのファイルの取得はまだ(12/16,18:05時点)
         </p>
     </footer>
     
@@ -248,11 +249,7 @@
 
                 //連想配列をJsonに変化
                 json_data = JSON.stringify(data);
-                console.log(json_data);
-                
-                console.log(tmb);
-
-                
+                console.log(json_data);                
             },
         },
         template:`
