@@ -14,23 +14,73 @@
             <button-counter></button-counter>
           </div>
         <br>!-->
-        <div id="registaration_form">
-            <input-title></input-title>
-    
-            <input-developer></input-developer>
+        <div id="app">
+
+            <h3>タイトル名</h3>
+            <input v-model="title" id="title" placeholder="edit this" />
+            <p>Title : {{ title }}</p>
+
+            <h3>開発者名</h3>
+            <input v-model="developer" id="developer" placeholder="edit this" />
+            <p>Developer : {{ developer }} </p>
             
-            <input-caption></input-caption>
+            <h3>説明文</h3>
+            <textarea v-model="caption" id ="caption" placeholder="add multiple lines" rows= "10" cols = "50" spellcheck="false"></textarea>
+            <p>Caption : {{ caption }} </p>
 
-            <select-tags></select-tags>
+            <h3>Tag(複数選択可)</h3>
+            <select size ="5" v-model="tags" id="tags" multiple>
+                <option value="ACTION">Action</option>
+                <option value="SHOOTING">SHOOTING</option>
+                <option value="RPG">RPG</option>
+                <option value="PUZZLE">PUZZLE</option>
+                <option value="SIMULATION">SIMULATION</option>
+                <option value="ADVENTURE">ADVENTURE</option>
+                <option value="FIGHTING">FIGHTING</option>
+                <option value="RACE">RACE</option>
+                <option value="RHYTHM">RHYTHM</option>
+                <option value="SPORTS">SPORTS</option>
+                <option value="ETCETRA">ETCETRA</option>
+            </select>
+            <br/>
+            <span>Tag: {{ tags }}</span>`
 
-            <input-subtag></input-subtag>
+            <h3>subtag</h3>
+            <input v-model="subtag1" id="subtag1" placeholder="edit this" />
+            <input v-model="subtag2" id="subtag2" placeholder="edit this" />
+            <input v-model="subtag3" id="subtag3" placeholder="edit this" />
+            <p>Subtag :<br> {{ subtag1 }}<br>{{ subtag2 }}<br>{{ subtag3 }}</p>
 
-            <tmb-setting></tmb-setting>
+            <div>
+                <h3>サムネを選択</h3>
+                <div v-if="!tmbdataurl">
+                <input type="file" id="tmb" accept = "images/*" @change="readTmb">
+                </div>
+                <div v-else>
+                    <div id="tmb-preview">
+                        <span v-if="tmbfile.name != ''">{{ tmbfile.name }}</span>
+                        <img :src="tmbdataurl" v-if="tmbdataurl">
+                    </div>
+                    <button type ="button" @click = "resetTmb">サムネのリセット</button>
+                </div>
+            </div>`
 
-            <img-setting></img-setting>
-
-            <submit></submit>
+            <div>
+                <h3>プレイ画像を選択</h3>
+                <div v-if="!imgdataurl">
+                    <input type="file" id="img" accept = "images/*" @change="readImg">
+                </div>
+                <div v-else>
+                    <div id="img-preview">
+                        <span v-if="imgfile.name != ''">{{ imgfile.name }}</span>
+                        <img :src="imgdataurl" v-if="imgdataurl">
+                    </div>
+                    <button type ="button" @click = "resetImg">サムネのリセット</button>
+                </div>
             </div>
+
+            <button type ="button" @click = "showData">submit</button>
+            
         </div>
 
         
@@ -43,96 +93,20 @@
     
     <script src="https://unpkg.com/vue@next"></script>
     <script>
-    const app = Vue.createApp({})
-
-    
-    app.component('input-title', {
+    const app = Vue.createApp({
         data(){
             return{
-            title: ''
-            }
-        },
-        template: `
-        <h3>タイトル名</h3>
-        <input v-model="title" id="title" placeholder="edit this" />
-        <p>Title : {{ title }}
-            </p>`
-    })
-
-    app.component('input-developer',{
-        data(){
-            return{
-                developer:''
-            }
-        },
-        template:`
-        <h3>開発者名</h3>
-        <input v-model="developer" id="developer" placeholder="edit this" />
-        <p>Developer : {{ developer }}
-            </p>`
-    })
-
-    app.component('input-caption',{
-        data(){
-            return{
-                caption:''
-            }
-        },
-        template:`
-        <h3>説明文</h3>
-        <textarea v-model="caption" id ="caption" placeholder="add multiple lines" rows= "10" cols = "50" spellcheck="false"></textarea>
-        <p>Caption : {{ caption }}
-            </p>`
-    })
-
-    app.component('select-tags',{
-        data(){
-            return{
-                tags:''
-            }
-        },
-        template:`
-        <h3>Tag(複数選択可)</h3>
-        <select size ="5" v-model="tags" id="tags" multiple>
-            <option value="ACTION">Action</option>
-            <option value="SHOOTING">SHOOTING</option>
-            <option value="RPG">RPG</option>
-            <option value="PUZZLE">PUZZLE</option>
-            <option value="SIMULATION">SIMULATION</option>
-            <option value="ADVENTURE">ADVENTURE</option>
-            <option value="FIGHTING">FIGHTING</option>
-            <option value="RACE">RACE</option>
-            <option value="RHYTHM">RHYTHM</option>
-            <option value="SPORTS">SPORTS</option>
-            <option value="ETCETRA">ETCETRA</option>
-        </select>
-        <br />
-        <span>Tag: {{ tags }}</span>`
-    })
-
-
-    app.component('input-subtag', {
-        data(){
-            return{
-            subtag1: '',
-            subtag2: '',
-            subtag3: ''
-            }
-        },
-        template: `
-        <h3>subtag</h3>
-        <input v-model="subtag1" id="subtag1" placeholder="edit this" />
-        <input v-model="subtag2" id="subtag2" placeholder="edit this" />
-        <input v-model="subtag3" id="subtag3" placeholder="edit this" />
-        <p>Subtag :<br> {{ subtag1 }}<br>{{ subtag2 }}<br>{{ subtag3 }}
-            </p>`
-    })
-    
-    app.component('tmb-setting',{
-        data(){
-            return{
-                dataurl:null,
-                file:null,
+                title:'',
+                developer:'',
+                caption:'',
+                tags:'',
+                subtag1: '',
+                subtag2: '',
+                subtag3: '',
+                tmbdataurl:null,
+                tmbfile:null,
+                imgdataurl:null,
+                imgfile:null,
             }
         },
         methods:{
@@ -142,34 +116,70 @@
                     return ;
                 }
                 
-                this.file = inputTmb.files[0];
-                console.log(this.dataurl);
+                this.tmbfile = inputTmb.files[0];
+                console.log(this.tmbdataurl);
                 const reader = new FileReader();
                 reader.onload = (e) => {
-                    this.dataurl = e.target.result;
+                    this.tmbdataurl = e.target.result;
                 }
-                reader.readAsDataURL(this.file);
+                reader.readAsDataURL(this.tmbfile);
             },
             resetTmb(){
-                this.dataurl = null;
-                this.file = null;
+                this.tmbdataurl = null;
+                this.tmbfile = null;
             },
-        },
-        template:`
-        <div>
-            <h3>サムネを選択</h3>
-            <div v-if="!dataurl">
-                <input type="file" id="tmb" accept = "images/*" @change="readTmb">
-            </div>
-            <div v-else>
-                <div id="tmb-preview">
-                    <span v-if="file.name != ''">{{ file.name }}</span>
-                    <img :src="dataurl" v-if="dataurl">
-                </div>
-                <button type ="button" @click = "resetTmb">サムネのリセット</button>
-            </div>
-        </div>`
+
+            readImg(){
+                const inputImg = document.getElementById('img');
+                if(inputImg.files.length == 0){
+                    return ;
+                }
+                
+                this.imgfile = inputImg.files[0];
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    this.imgdataurl = e.target.result;
+                }
+                reader.readAsDataURL(this.imgfile);
+            },
+            resetImg(){
+                this.imgdataurl = null;
+                this.imgfile = null;
+            },
+
+            showData(){
+                var data={};
+                console.log(this.title);
+                console.log(developer.value);
+                console.log(caption.value);
+                for(var i=0;i<tags.length;i++){
+                    if(tags[i].selected){
+                        console.log(tags[i].value);
+                    }
+                }
+                console.log(subtag1.value);
+                console.log(subtag2.value);
+                console.log(subtag3.value);
+                data["title"] = title.value;
+                data["developer"] = developer.value;
+                data["caption"] = caption.value;
+
+                var arr = [];
+                for(var i=0;i<tags.length;i++){
+                    if(tags[i].selected){
+                        arr.push(tags[i].value);
+                    }
+                }
+                data["tags"] = arr;
+                data["subtag"] = [subtag1.value,subtag2.value,subtag3.value];
+
+                //連想配列をJsonに変化
+                json_data = JSON.stringify(data);
+                console.log(json_data);                
+            },
+        }
     })
+    
     
     app.component('img-setting',{
         data(){
@@ -223,12 +233,13 @@
         methods:{
             showData(){
                 var data={};
-                console.log(title.value);
-                console.log(developer.value);
-                console.log(caption.value);
-                for(var i=0;i<tags.length;i++){
-                    if(tags[i].selected){
-                        console.log(tags[i].value);
+                console.log(this.title);
+                console.log(this.developer);
+                console.log(this.caption);
+                console.log(this.tags);
+                for(var i=0;i<this.tags.length;i++){
+                    if(this.tags[i].selected){
+                        console.log(this.tags[i].value);
                     }
                 }
                 console.log(subtag1.value);
@@ -261,7 +272,7 @@
 
     
 
-    app.mount('#registaration_form')
+    app.mount('#app')
 
 
     </script>
