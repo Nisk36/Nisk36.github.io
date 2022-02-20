@@ -80,18 +80,18 @@
             </div>
 
             <button type ="button" @click = "showData">submit</button>
-            
         </div>
 
         
     <footer>
-        <p> cssがカスなのは見逃してください。
-            単ーコンポーネント構造でやればよかった...<br>  
-            submit押してconsole見ればsubtagまでのjsonデータが生成できてると思います。submit押してからのファイルの取得はまだ(12/16,18:05時点)
-        </p>
+        <p></p>
     </footer>
+
+</body>
+
     
     <script src="https://unpkg.com/vue@next"></script>
+    
     <script>
     const app = Vue.createApp({
         data(){
@@ -171,110 +171,31 @@
                     }
                 }
                 data["tags"] = arr;
+                
                 data["subtag"] = [subtag1.value,subtag2.value,subtag3.value];
 
                 //連想配列をJsonに変化
                 json_data = JSON.stringify(data);
-                console.log(json_data);                
+                console.log(json_data);     
+
+                console.log(this.tmbdataurl);
+                console.log(this.tmbfile);
+                console.log(this.imgdataurl);
+                console.log(this.imgfile);
+                console.log(config);
             },
+            
+
+
         }
     })
     
     
-    app.component('img-setting',{
-        data(){
-            return{
-                dataurl:null,
-                file:null,
-            }
-        },
-        methods:{
-            readImg(){
-                const inputImg = document.getElementById('tmb');
-                if(inputImg.files.length == 0){
-                    return ;
-                }
-                
-                this.file = inputImg.files[0];
-
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    this.dataurl = e.target.result;
-                }
-                reader.readAsDataURL(this.file);
-            },
-            resetImg(){
-                this.dataurl = null;
-                this.file = null;
-            },
-        },
-        template:`
-        <div>
-            <h3>プレイ画像を選択</h3>
-            <div v-if="!dataurl">
-                <input type="file" id="tmb" accept = "images/*" @change="readImg">
-            </div>
-            <div v-else>
-                <div id="img-preview">
-                    <span v-if="file.name != ''">{{ file.name }}</span>
-                    <img :src="dataurl" v-if="dataurl">
-                </div>
-                <button type ="button" @click = "resetImg">サムネのリセット</button>
-            </div>
-        </div>`
-    })
-
-    app.component('submit',{
-        data(){
-            return {
-
-            }
-        },
-        methods:{
-            showData(){
-                var data={};
-                console.log(this.title);
-                console.log(this.developer);
-                console.log(this.caption);
-                console.log(this.tags);
-                for(var i=0;i<this.tags.length;i++){
-                    if(this.tags[i].selected){
-                        console.log(this.tags[i].value);
-                    }
-                }
-                console.log(subtag1.value);
-                console.log(subtag2.value);
-                console.log(subtag3.value);
-                data["title"] = title.value;
-                data["developer"] = developer.value;
-                data["caption"] = caption.value;
-
-                var arr = [];
-                for(var i=0;i<tags.length;i++){
-                    if(tags[i].selected){
-                        arr.push(tags[i].value);
-                    }
-                }
-                data["tags"] = arr;
-                data["subtag"] = [subtag1.value,subtag2.value,subtag3.value];
-
-                //連想配列をJsonに変化
-                json_data = JSON.stringify(data);
-                console.log(json_data);                
-            },
-        },
-        template:`
-        <div>
-            <button type ="button" @click = "showData">submit</button>
-            <p id="debug"></p>
-        </div>`
-    })
-
+    
     
 
     app.mount('#app')
 
 
     </script>
-</body>
 </html>
