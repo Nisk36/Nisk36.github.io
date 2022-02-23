@@ -1,41 +1,40 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <link href="slide.css" rel="stylesheet">
-    <title>slide test page</title>
-    
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-  </head>
-  <body>
+    <!--<link href="../style.css" rel="stylesheet">-->
+    <link href="slide.css" rel="stylesheet">
+    <title>テスト</title>
+</head>
+<body>
+    <!-- / slideshow -->
 
+    <div id="contents"></div>
 
+    <div class = "container" id = "container">
+        <div class = "slider">
+            <div class = "slides" id="slides">
 
-    <div class="container">
+            <!--ここに動的にHTML生成する-->
 
-        <div class="slider">
-      
-          <div class="slides" id = "slides">
-            <!--ここにスライドを作成-->
-          </div>
-      
+            </div>
         </div>
         <!-- / slider -->
-      
+
         <!-- #Controls -->
         <a class="control fas fa-chevron-left" id="prev"></a>
         <a class="control fas fa-chevron-right" id="next"></a>
-      
+   
         <!-- #Position dots -->
         <div class="dots" id="dots">
-          <!--ここにスライドの点作成-->
+        
         </div>
-      
-      </div>
-      <!-- / slideshow -->
-      
-
-      <script type="module">
+   
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
         import { getStorage, ref, uploadBytes, getDownloadURL, listAll } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js";
@@ -58,103 +57,230 @@
         console.log(storage);
     
         const storageRef = ref(storage);
-        
-        //HTML動的生成
-        const slides = document.getElementById("slides");
-        const dots = document.getElementById("dots");
-
-        //連想配列使ってみる
+    
         var data = [];
-        var developer = ["RYO","HANIWA"];
-        for(var k in developer){
-          data[k] = {imgUrl: '',title: '',genre: '',caption: ''};
+        var developer = [];
+    
+        function getJsonData(v,jsonRef,data){
+            return new Promise((resolve,reject) => {
+              getDownloadURL(jsonRef)
+                .then((url) =>{
+                    fetch(url)
+                        .then(response => response.json())
+                            .then(jsonData => {
+                                var obj = JSON.parse(JSON.stringify(jsonData));
+                                //console.log(obj);
+                                data[v]["title"] = obj.title;
+                                data[v]["caption"] = obj.caption;
+                                data[v]["genre"] = obj.tags;
+                                data[v]["URL"] = obj.URL;
+                                //console.log(data[v]["title"]+data[v]["caption"]+data[v]["genre"]+data[v]["URL"])                                       
+                            })
+                })
+            
+            resolve();
+            })
         }
-        console.log(data);
-        //ここでは手動で入力する
-        data[0]["imgUrl"] = "example_action.png";
-        data[0]["title"] = "らんだむちゃんの冒険";
-        data[0]["genre"] = "アクションゲーム";
-        data[0]["caption"] = "雲の上になんたらかんたら";
-
-        data[1]["imgUrl"] = "example_boardgame.png";
-        data[1]["title"] = "ハニワ君の冒険"
-        data[1]["genre"] = "タワーディフェンスゲーム"
-        data[1]["caption"] = "オーブの力でなんたらかんたら"
-        
-
-        function createHTML(k){
-          return new Promise((resolve,reject) =>{
-            setTimeout(()=>{
-              console.log(data[k]["imgUrl"]);
-              console.log(data[k]["title"])
-              console.log(data[k]["genre"])
-              console.log(data[k]["caption"])
-
-              const slides__img = document.createElement("div");
-              slides__img.className = "slides__img";
-              slides__img.id = " ";
-              slides__img.style = "background-image: url('"+data[k]["imgUrl"]+"')"
-              slides.appendChild(slides__img);
-              console.log("slides_img作成");
-
-              const slides__img__filter = document.createElement("div");
-              slides__img__filter.className = "slides__img__filter";
-              slides__img.appendChild(slides__img__filter);
-              console.log("slides__img__filter作成");
-
-              const slide__caption = document.createElement("div");
-              slide__caption.className = "slide__caption";
-              slides__img.appendChild(slide__caption);  
-              console.log("slides__caption作成");      
-
-              const slide__caption__title = document.createElement("h1");
-              slide__caption__title.className = "slide__caption__title";
-              slide__caption__title.textContent = data[k]["title"];
-              console.log("slide_caption_title作成")
-        
-              const slide__caption__subtitle = document.createElement("h2");
-              slide__caption__subtitle.className = "slide__caption__subtitle";
-              slide__caption__subtitle.textContent = data[k]["genre"];
-              console.log("slide_caption_subtitle作成")
-
-              const slide__caption__text = document.createElement("h3");
-              slide__caption__text.className = "slide__caption__text";
-              slide__caption__text.textContent = data[k]["caption"];
-              console.log("slide_caption_text作成")
-        
-              slide__caption.appendChild(slide__caption__title);
-              slide__caption.appendChild(slide__caption__subtitle);
-              slide__caption.appendChild(slide__caption__text);
-              console.log("HTMLセット作成完了")
-              resolve();
-
-              const dots__single = document.createElement("span");
-              dots__single.className = "dots__single";
-              dots__single.id = ' ';
-              dots.appendChild(dots__single);
-              console.log("スライドの下の点生成")
-            },100)
-          })
-          
+    
+        async function getJsonDataSync(v,jsonRef,data){
+            await getJsonData(v,jsonRef,data)
         }
-
-
-
-        async function createHTMLSync(){
-          for(var v in data){
-            console.log(v);
-            await createHTML(v);
-            console.log("HTML作成完了")
-            console.log(slides);
-          }
+    
+        function getIconUrl(v,iconRef,data){
+            return new Promise((resolve,reject) => {
+                getDownloadURL(ref(iconRef))
+                    .then((url) => {
+                       data[v]["icondataurl"] = url;
+                    })
+            resolve();
+            })
         }
-
-        createHTMLSync();
-
-
-        console.log(slides);
+    
+        async function getIconUrlSync(v,iconRef,data){
+            await getIconUrl(v,iconRef,data);
+        }
+    
+        function getTmbUrl(v,tmbRef,data){
+            return new Promise((resolve,reject) => {
+                getDownloadURL(tmbRef)
+                    .then((url) => {
+                        data[v]["tmbdataurl"] = url;
+                    })
+            })
+        }
+    
+        async function getTmbUrlSync(v,tmbRef,data){
+            await getTmbUrl(v,tmbRef,data);
+        }
+    
+        function getImg1Url(v,img1Ref,data){
+            return new Promise((resolve,reject) => {
+                getDownloadURL(img1Ref)
+                    .then((url) => {
+                        data[v]["imgdata1url"] = url;
+                    })
+            })
+        }
+    
+        async function getImg1UrlSync(v,img1Ref,data){
+            await getImg1Url(v,img1Ref,data);
+        }
+    
+        function getImg2Url(v,img2Ref,data){
+            return new Promise((resolve,reject) => {
+                getDownloadURL(img2Ref)
+                    .then((url) => {
+                        data[v]["imgdata2url"] = url;
+                    })
+            })
+        }
+    
+        async function getImg2UrlSync(v,img2Ref,data){
+            await getImg2Url(v,img2Ref,data);
+        }
+    
+        function getImg3Url(v,img3Ref,data){
+            return new Promise((resolve,reject) => {
+                getDownloadURL(img3Ref)
+                    .then((url) => {
+                        data[v]["imgdata3url"] = url;
+                    })
+            })
+        }
+    
+        async function getImg3UrlSync(v,img3Ref,data){
+            await getImg3Url(v,img3Ref,data);
+        }
+    
+        function createHTML(k,data){
+            return new Promise((resolve,reject) =>{
+                
+                //console.log(k);
+                //console.log(data);
+                //console.log(data[k]);
+                const slides__img = document.createElement("div");
+                slides__img.className = "slides__img";
+                slides__img.id = "";
+                slides__img.style = "background-image: url('"+data[k]["tmbdataurl"]+"')";
+                slides.appendChild(slides__img);
+                console.log("slides_img作成");
+    
+                const slides__img__filter = document.createElement("div");
+                slides__img__filter.className = "slides__img__filter";
+                slides__img.appendChild(slides__img__filter);
+                console.log("slides__img__filter作成");
+    
+                const slide__caption = document.createElement("div");
+                slide__caption.className = "slide__caption";
+                slides__img.appendChild(slide__caption);  
+                console.log("slides__caption作成");      
+    
+                const slide__caption__title = document.createElement("h1");
+                slide__caption__title.className = "slide__caption__title";
+                slide__caption__title.textContent = data[k]["title"];
+                console.log("slide_caption_title作成")
+            
+                const slide__caption__subtitle = document.createElement("h2");
+                slide__caption__subtitle.className = "slide__caption__subtitle";
+                slide__caption__subtitle.textContent = data[k]["genre"];
+                console.log("slide_caption_subtitle作成")
+    
+                const slide__caption__text = document.createElement("h3");
+                slide__caption__text.className = "slide__caption__text";
+                slide__caption__text.innerHTML = data[k]["caption"].replace(/\n/g, '<br>');
+                console.log("slide_caption_text作成")
+            
+                slide__caption.appendChild(slide__caption__title);
+                slide__caption.appendChild(slide__caption__subtitle);
+                slide__caption.appendChild(slide__caption__text);
+                console.log("HTMLセット作成完了")
+    
+                const dots__single = document.createElement("span");
+                dots__single.className = "dots__single";
+                dots__single.id = '';
+                dots.appendChild(dots__single);
+                console.log("スライドの下の点生成")
+                console.log("スライド作成完了")
+                
+                resolve();
+            })
+        }
+    
+        async function createHTMLSync(k,data){
+            await createHTML(k,data);
+        }
         
+        listAll(storageRef)
+                    .then((res) => {
+                        res.prefixes.forEach((folderRef) => {
+                            //console.log(folderRef.name);
+                            developer[developer.length] = folderRef.name;
+                            //console.log(developer)
+                        })
+                        console.log("data配列作るのスタート")
+                        for(var v in developer){
+                            
+                            data[v] = {title: '',developer: developer[v],caption: '',genre: '',icondataurl: '',tmbdataurl: '',
+                                    imgdata1url:'',imgdata2url:'',imgdata3url:'',URL:''};
+                            //console.log(data);
+                        }
+                        //jsonデータの解体＆格納
+                        console.log("jsonデータ処理スタート")
+                        for(var v in data){
+                            const devName = data[v]["developer"];
+                            var jsonRef = ref(storage,devName+'/'+devName+'_.data.json');
+                            getJsonDataSync(v,jsonRef,data);
+                        }
+                        //iconのurlの取得&格納
+                        console.log("iconのurl取得スタート")
+                        for(var v in data){
+                            const devName = data[v]["developer"];
+                            var iconRef = ref(storage,devName+'/'+devName+'_icon')
+                            getIconUrlSync(v,iconRef,data);
+                        }
+                        //thumbnailのurlの取得&格納
+                        console.log("Thumnailのurl取得スタート")
+                        for(var v in data){
+                            const devName = data[v]["developer"];
+                            var tmbRef = ref(storage,devName+'/'+devName+'_thumbnail')
+                            getTmbUrlSync(v,tmbRef,data);
+                        }
+                        //img1のurlの取得&格納
+                        console.log("img1のurl取得スタート");
+                        for(var v in data){
+                            const devName = data[v]["developer"];
+                            var img1Ref = ref(storage,devName+'/'+devName+'image')
+                            getImg1UrlSync(v,img1Ref,data);
+                        }
+                        //img2のurlの取得&格納
+                        console.log("img2のurl取得スタート");
+                        for(var v in data){
+                            const devName = data[v]["developer"];
+                            var img2Ref = ref(storage,devName+'/'+devName+'image2')
+                            getImg2UrlSync(v,img2Ref,data);
+                        }
+                        //img3のurlの取得&格納
+                        console.log("img3のurl取得スタート");
+                        for(var v in data){
+                            const devName = data[v]["developer"];
+                            var img3Ref = ref(storage,devName+'/'+devName+'image3')
+                            getImg3UrlSync(v,img3Ref,data);
+                        }
+    
+    
+                        //HTML動的生成
+                        const slides = document.getElementById("slides");
+                        const dots = document.getElementById("dots");
+                        
+                        //スライド作る
+                        console.log(data);
+                        console.log("スライド作る")
+                        setTimeout(function(){for(var v in data){
+                            createHTML(v,data);
+                        }},2000)
+    
+        })
     </script>
     <script src="slide.js"></script>
-  </body>
+</body>
 </html>
