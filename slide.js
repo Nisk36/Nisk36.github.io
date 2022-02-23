@@ -23,7 +23,7 @@
   // at the end it focuses the current dot
   function dotsFocus() {
     $("[id^='dot_']").removeClass("dots__current");
-    var id = $(".slides__img:eq(1)").attr("id");
+    var id = $(".slides__img:eq(0)").attr("id");
     console.log(id);
     var n = id.replace(/[^0-9]/g, '');
     console.log(n);
