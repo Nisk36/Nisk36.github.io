@@ -164,4 +164,4 @@
   idGenerator();
   captionSlideUp(1700, "swing");
   slideShow(800, "swing");
-},5000)
+},5500)
