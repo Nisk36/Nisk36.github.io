@@ -25,11 +25,14 @@
     $("[id^='dot_']").removeClass("dots__current");
     var id = $(".slides__img:eq(1)").attr("id");
     console.log(id);
-    var n = Number(id.substr(-1));
+    var n = id.replace(/[^0-9]/g, '');
+    console.log(n);
+    $("#dot_" + (n)).addClass("dots__current");
+    console.log(n-1);
     if (n === 0) {
       n = $(".slides__img").length;
+      console.log("n=0");
     }
-    $("#dot_" + (n - 1)).addClass("dots__current");
   }
 
   // slide up caption
@@ -102,12 +105,12 @@
       var currentId = parseInt(
         $(".dots__current")
           .attr("id")
-          .substr(-1)
+          .replace(/[^0-9]/g, '')
       );
       var clickId = parseInt(
         $(this)
           .attr("id")
-          .substr(-1)
+          .replace(/[^0-9]/g, '')
       );
       var max = $(".dots__single").length - 1;
       var half = Math.floor($(".dots__single").length / 2);
@@ -164,4 +167,4 @@
   idGenerator();
   captionSlideUp(1700, "swing");
   slideShow(800, "swing");
-},5500)
+},5000)
